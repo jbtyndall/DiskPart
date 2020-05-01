@@ -6,9 +6,9 @@ namespace Tyndall.DiskPartTest
     {
         static void Main(string[] args)
         {
-            // List Disks and Partitions
+            // List Disks, any Partitions, and Disk Details
 
-            Console.WriteLine($"Listing disks and partitions...");
+            Console.WriteLine($"LIST DISK");
 
             var disks = DiskPart.Commands.ListDisk();
 
@@ -16,26 +16,51 @@ namespace Tyndall.DiskPartTest
             {
                 var partitions = DiskPart.Commands.ListPartition(disk.Index);
 
-                Console.WriteLine($"Found disk. {{Index:'{disk.Index}'; Status:'{disk.Status}'; Size:'{disk.Size}'; Free:'{disk.Free}'; Dyn:'{disk.Dyn}'; Gpt:'{disk.Gpt}'}}");
+                Console.WriteLine($"Disk Index:'{disk.Index}'; Status:'{disk.Status}'; Size:'{disk.Size}'; Free:'{disk.Free}'; Dyn:'{disk.Dyn}'; Gpt:'{disk.Gpt}'");
+
+                Console.WriteLine();
+
+                Console.WriteLine($"LIST PARTITION (Disk {disk.Index})");
 
                 foreach(var partition in partitions)
                 {
-                    Console.WriteLine($"Found partition on disk {disk.Index}. {{Index:'{partition.Index}'; Type:'{partition.Type}'; Size:'{partition.Size}'; Offset:'{partition.Offset}'}}");
+                    Console.WriteLine($"Partition Index:'{partition.Index}'; Type:'{partition.Type}'; Size:'{partition.Size}'; Offset:'{partition.Offset}'");
                 }
+
+                Console.WriteLine();
+
+                Console.WriteLine($"DETAIL DISK (Disk {disk.Index})");
+
+                var diskDetails = DiskPart.Commands.DetailDisk(disk.Index);
+
+                Console.WriteLine($"DisplayName:'{diskDetails.DisplayName}'; DiskId:'{diskDetails.DiskId}'; Type:'{diskDetails.Type}'; Status:'{diskDetails.Status}'; Path:'{diskDetails.Path}'; Target:'{diskDetails.Target}'; LunId:'{diskDetails.LunId}'; LocationPath:'{diskDetails.LocationPath}'; CurrentReadOnlyState:'{diskDetails.CurrentReadOnlyState}'; ReadOnly:'{diskDetails.ReadOnly}'; BootDisk:'{diskDetails.BootDisk}'; PagefileDisk:'{diskDetails.PagefileDisk}'; HibernationFileDisk:'{diskDetails.HibernationFileDisk}'; CrashdumpDisk:'{diskDetails.CrashdumpDisk}'; ClusteredDisk:'{diskDetails.ClusteredDisk}'");
+
+                Console.WriteLine();
+
+                Console.WriteLine("Disk Volumes:");
+
+                foreach(var volume in diskDetails.Volumes)
+                {
+                    Console.WriteLine($"Volume Index:'{volume.Index}'; Ltr:'{volume.Ltr}'; Label:'{volume.Label}'; Fs:'{volume.Fs}'; Type:'{volume.Type}'; Size:'{volume.Size}'; Status:'{volume.Status}'; Info:'{volume.Info}'");
+                }
+
+                Console.WriteLine();
             }
 
             // List Volumes
 
-            Console.WriteLine($"Listing volumes...");
+            Console.WriteLine($"LIST VOLUME");
 
             var volumes = DiskPart.Commands.ListVolume();
 
             foreach(var volume in volumes)
             {
-                Console.WriteLine($"Found volume. {{Index:'{volume.Index}'; Ltr:'{volume.Ltr}'; Label:'{volume.Label}'; Fs:'{volume.Fs}'; Type:'{volume.Type}'; Size:'{volume.Size}'; Status:'{volume.Status}'; Info:'{volume.Info}'}}");
+                Console.WriteLine($"Volume Index:'{volume.Index}'; Ltr:'{volume.Ltr}'; Label:'{volume.Label}'; Fs:'{volume.Fs}'; Type:'{volume.Type}'; Size:'{volume.Size}'; Status:'{volume.Status}'; Info:'{volume.Info}'");
             }
 
             // That's all, folks!
+
+            Console.WriteLine();
 
             Console.WriteLine("Press any key to continue...");
 

@@ -9,6 +9,11 @@ namespace Tyndall.DiskPart
     public static class Commands
     {
         /// <summary>
+        /// The separator character between DiskPart results lines.
+        /// </summary>
+        private const char DiskPartResultsSeparator = '\n';
+
+        /// <summary>
         /// Path to DiskPart.
         /// </summary>
         private static readonly string DiskPartPath = Environment.SystemDirectory + @"\diskpart.exe";
@@ -16,7 +21,7 @@ namespace Tyndall.DiskPart
         /// <summary>
         /// Path to temporary Results file.
         /// </summary>
-        private static readonly string ResultsFilePath = Path.GetTempPath() + @"dpResults.tmp";
+        private static readonly string DiskPartResultsPath = Path.GetTempPath() + @"diskpart.tmp";
 
         /// <summary>
         /// Lists disks similar to the LIST DISK command.
@@ -24,7 +29,7 @@ namespace Tyndall.DiskPart
         /// <param name="identifier">The text to specify a Disk. The default value is "Disk".</param>
         /// <param name="diskPartResultsSeparator">The separator character between DiskPart results lines. The default value is a newline.</param>
         /// <returns>A list of <c>Disk</c>s, as specified by a DiskPart LIST DISK command.</returns>
-        public static List<Disk> ListDisk(string identifier = "Disk", char diskPartResultsSeparator = '\n')
+        public static List<Disk> ListDisk(string identifier = "Disk", char diskPartResultsSeparator = DiskPartResultsSeparator)
         {
             var diskPartCommand = $"RESCAN{Environment.NewLine}LIST {identifier.ToUpper()}{Environment.NewLine}EXIT";
 
@@ -51,7 +56,7 @@ namespace Tyndall.DiskPart
         /// <param name="identifier">The text to specify a Volume. The default value is "Volume".</param>
         /// <param name="diskPartResultsSeparator">The separator character between DiskPart results lines. The default value is a newline.</param>
         /// <returns>A list of <c>Volume</c>s, as specified by a DiskPart LIST VOLUME command.</returns>
-        public static List<Volume> ListVolume(string identifier = "Volume", char diskPartResultsSeparator = '\n')
+        public static List<Volume> ListVolume(string identifier = "Volume", char diskPartResultsSeparator = DiskPartResultsSeparator)
         {
             var diskPartCommand = $"RESCAN{Environment.NewLine}LIST {identifier.ToUpper()}{Environment.NewLine}EXIT";
 
@@ -79,7 +84,7 @@ namespace Tyndall.DiskPart
         /// <param name="identifier">The text to specify a Partition. The default value is "Partition."</param>
         /// <param name="diskPartResultsSeparator">The separator character between DiskPart results lines. The default value is a newline.</param>
         /// <returns>A list of <c>Partition</c>s, as specified by a DiskPart LIST PARTITION command.</returns>
-        public static List<Partition> ListPartition(int diskIndex, string identifier = "Partition", char diskPartResultsSeparator = '\n')
+        public static List<Partition> ListPartition(int diskIndex, string identifier = "Partition", char diskPartResultsSeparator = DiskPartResultsSeparator)
         {
             var diskPartCommand = $"RESCAN{Environment.NewLine}SELECT DISK {diskIndex}{Environment.NewLine}LIST {identifier.ToUpper()}{Environment.NewLine}EXIT";
 
@@ -100,6 +105,17 @@ namespace Tyndall.DiskPart
             return partitions;
         }
 
+        public static DiskDetail DetailDisk(int diskIndex, char diskPartResultsSeparator = DiskPartResultsSeparator)
+        {
+            var diskPartCommand = $"RESCAN{Environment.NewLine}SELECT DISK {diskIndex}{Environment.NewLine}DETAIL DISK{Environment.NewLine}EXIT";
+
+            var diskPartResults = Run(diskPartCommand, true).Split(diskPartResultsSeparator);
+
+            var diskDetails = new DiskDetail(diskPartResults);
+
+            return diskDetails;
+        }
+
         /// <summary>
         /// Runs a DiskPart RESCAN command.
         /// </summary>
@@ -113,16 +129,26 @@ namespace Tyndall.DiskPart
         /// </summary>
         /// <param name="command">The DiskPart command, with each command separated by Environment.NewLine.</param>
         /// <param name="writeResultsToFile">Specifies whether or not to write results to a temporary file. The default value is FALSE.</param>
-        public static string Run(string command, bool writeResultsToFile = false)
+        public static string Run(string command, bool writeResultsToFile = false, string diskPartPath = "", string diskPartResultsPath = "")
         {
-            if(!File.Exists(DiskPartPath))
+            if(string.IsNullOrEmpty(diskPartPath))
             {
-                throw new FileNotFoundException(DiskPartPath);
+                diskPartPath = DiskPartPath;
             }
 
-            if(!File.Exists(ResultsFilePath))
+            if(!File.Exists(diskPartPath))
             {
-                File.Delete(ResultsFilePath);
+                throw new FileNotFoundException(diskPartPath);
+            }
+
+            if(string.IsNullOrEmpty(diskPartResultsPath))
+            {
+                diskPartResultsPath = DiskPartResultsPath;
+            }
+
+            if(File.Exists(diskPartResultsPath))
+            {
+                //File.Delete(diskPartResultsPath);
             }
 
             var commandArray = command.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
@@ -131,7 +157,7 @@ namespace Tyndall.DiskPart
             {
                 StartInfo =
                 {
-                    FileName = DiskPartPath,
+                    FileName = diskPartPath,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
@@ -152,7 +178,7 @@ namespace Tyndall.DiskPart
 
             if (writeResultsToFile)
             {
-                File.WriteAllText(ResultsFilePath, diskPartResults);
+                File.WriteAllText(diskPartResultsPath, diskPartResults);
             }
 
             return diskPartResults;

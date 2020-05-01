@@ -23,7 +23,7 @@
         /// <summary>
         /// Parses a DiskPart results line for the specified String property.
         /// </summary>
-        /// <param name="diskPartResultsObjectLine">A line from DiskPart results (output) that starts with the Object identifier.</param>
+        /// <param name="diskPartResultsObjectLine">A line from DiskPart results (i.e., output) that starts with the Object identifier.</param>
         /// <param name="parseStartIndex">The StartIndex where the property begins.</param>
         /// <param name="parseLength">The length of the property.</param>
         /// <returns>A trimmed string representing the property.</returns>
@@ -48,7 +48,7 @@
         /// <summary>
         /// Parses a DiskPart results line for the specified Integer property.
         /// </summary>
-        /// <param name="diskPartResultsObjectLine">A line from DiskPart results (output) that starts with the Object identifier.</param>
+        /// <param name="diskPartResultsObjectLine">A line from DiskPart results (i.e., output) that starts with the Object identifier.</param>
         /// <param name="parseStartIndex">The StartIndex where the property begins.</param>
         /// <param name="parseLength">The length of the property.</param>
         /// <param name="removeText">Optional text to remove from the property when parsing as an Integer.</param>
@@ -70,7 +70,7 @@
         /// <summary>
         /// Parses a DiskPart results line for the specified Boolean property.
         /// </summary>
-        /// <param name="diskPartResultsObjectLine">A line from DiskPart results (output) that starts with the Object identifier.</param>
+        /// <param name="diskPartResultsObjectLine">A line from DiskPart results (i.e., output) that starts with the Object identifier.</param>
         /// <param name="parseStartIndex">The StartIndex where the property begins.</param>
         /// <param name="parseLength">The length of the property.</param>
         /// <param name="parseAsTrue">The string that denotes "True".</param>
