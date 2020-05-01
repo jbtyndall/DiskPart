@@ -43,6 +43,10 @@ namespace Tyndall.DiskPart
         /// <remarks>This value matches what DiskPart reports (i.e., a size label), rather than the actual size (e.g., in bytes).</remarks>
         public string Offset { get; set; }
 
+        /// <summary>
+        /// Instantiates a new <c>Partition</c> from the specified DiskPart results Partition line.
+        /// </summary>
+        /// <param name="diskPartResultsPartitionLine">A line from DiskPart results (output) that starts with "Partition".</param>
         public Partition(string diskPartResultsPartitionLine)
         {
             Index = ParsePropertyAsInt(diskPartResultsPartitionLine, IndexParseInfo.StartIndex, IndexParseInfo.Length, IndexParseInfo.Identifier);

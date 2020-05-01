@@ -81,7 +81,7 @@
         public string Info { get; set; }
 
         /// <summary>
-        /// Instaniates a new <c>Volume</c> from the specified DiskPartResults Volume Line.
+        /// Instaniates a new <c>Volume</c> from the specified DiskPart results Volume line.
         /// </summary>
         /// <param name="diskPartResultsVolumeLine">A line from DiskPart results (output) that starts with "Volume".</param>
         public Volume(string diskPartResultsVolumeLine)
