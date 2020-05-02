@@ -105,6 +105,12 @@ namespace Tyndall.DiskPart
             return partitions;
         }
 
+        /// <summary>
+        /// Displays the properties of the specified partition on the specified disk similar to the DETAIL DISK command.
+        /// </summary>
+        /// <param name="diskIndex">The Index of the disk to select.</param>
+        /// <param name="diskPartResultsSeparator">The separator character between DiskPart results lines. The default value is a newline.</param>
+        /// <returns>A list of <c>DiskDetail</c>s, as specified by a DiskPart DETAIL DISK command.</returns>
         public static DiskDetail DetailDisk(int diskIndex, char diskPartResultsSeparator = DiskPartResultsSeparator)
         {
             var diskPartCommand = $"RESCAN{Environment.NewLine}SELECT DISK {diskIndex}{Environment.NewLine}DETAIL DISK{Environment.NewLine}EXIT";
@@ -114,6 +120,24 @@ namespace Tyndall.DiskPart
             var diskDetails = new DiskDetail(diskPartResults);
 
             return diskDetails;
+        }
+
+        /// <summary>
+        /// Displays the properties of the specified partition on the specified disk similar to the DETAIL PARTITION command.
+        /// </summary>
+        /// <param name="diskIndex">The Index of the disk to select.</param>
+        /// <param name="partitionIndex">The Index of the partition to select.</param>
+        /// <param name="diskPartResultsSeparator">The separator character between DiskPart results lines. The default value is a newline.</param>
+        /// <returns>A list of <c>PartitionDetail</c>s, as specified by a DiskPart DETAIL PARTITION command.</returns>
+        public static PartitionDetail DetailPartition(int diskIndex, int partitionIndex, char diskPartResultsSeparator = DiskPartResultsSeparator)
+        {
+            var diskPartCommand = $"RESCAN{Environment.NewLine}SELECT DISK {diskIndex}{Environment.NewLine}SELECT PARTITION {partitionIndex}{Environment.NewLine}DETAIL PARTITION{Environment.NewLine}EXIT";
+
+            var diskPartResults = Run(diskPartCommand, true).Split(diskPartResultsSeparator);
+
+            var partitionDetails = new PartitionDetail(diskPartResults);
+
+            return partitionDetails;
         }
 
         /// <summary>

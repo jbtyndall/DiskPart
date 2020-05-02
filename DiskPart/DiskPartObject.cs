@@ -1,4 +1,6 @@
-﻿namespace Tyndall.DiskPart
+﻿using System.Text.RegularExpressions;
+
+namespace Tyndall.DiskPart
 {
     /// <summary>
     /// An abstract class for properties and utilities common to all DiskPart objects.
@@ -59,7 +61,16 @@
 
             var stringResult = ParseProperty(diskPartResultsObjectLine, parseStartIndex, parseLength);
 
-            if(int.TryParse(stringResult.Replace(removeText, "").Trim(), out var tryParseResult))
+            var adjustedStringResult = stringResult;
+
+            if(!string.IsNullOrEmpty(removeText))
+            {
+                var removePattern = $@"\**\s*{removeText}\s*";
+
+                adjustedStringResult = Regex.Replace(stringResult, removePattern, "").Trim();
+            }
+
+            if (int.TryParse(adjustedStringResult, out var tryParseResult))
             {
                 result = tryParseResult;
             }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tyndall.DiskPart
+﻿namespace Tyndall.DiskPart
 {
     public class Partition : DiskPartObject
     {

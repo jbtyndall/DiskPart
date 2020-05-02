@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Tyndall.DiskPartTest
 {
@@ -10,11 +11,11 @@ namespace Tyndall.DiskPartTest
 
             Console.WriteLine($"LIST DISK");
 
-            var disks = DiskPart.Commands.ListDisk();
+            List<DiskPart.Disk> disks = DiskPart.Commands.ListDisk();
 
-            foreach (var disk in disks)
+            foreach (DiskPart.Disk disk in disks)
             {
-                var partitions = DiskPart.Commands.ListPartition(disk.Index);
+                List<DiskPart.Partition> partitions = DiskPart.Commands.ListPartition(disk.Index);
 
                 Console.WriteLine($"Disk Index:'{disk.Index}'; Status:'{disk.Status}'; Size:'{disk.Size}'; Free:'{disk.Free}'; Dyn:'{disk.Dyn}'; Gpt:'{disk.Gpt}'");
 
@@ -22,9 +23,31 @@ namespace Tyndall.DiskPartTest
 
                 Console.WriteLine($"LIST PARTITION (Disk {disk.Index})");
 
-                foreach(var partition in partitions)
+                foreach (DiskPart.Partition partition in partitions)
                 {
                     Console.WriteLine($"Partition Index:'{partition.Index}'; Type:'{partition.Type}'; Size:'{partition.Size}'; Offset:'{partition.Offset}'");
+
+                    Console.WriteLine();
+
+                    Console.WriteLine($"DETAIL PARTITION (Disk {disk.Index}, Partition {partition.Index})");
+
+                    DiskPart.PartitionDetail partitionDetails = DiskPart.Commands.DetailPartition(disk.Index, partition.Index);
+
+                    Console.WriteLine($"DisplayName:'{partitionDetails.DisplayName}'; Type:'{partitionDetails.Type}'; Hidden:'{partitionDetails.Hidden}'; Required:'{partitionDetails.Required}'; Attrib:'{partitionDetails.Attrib}'; OffsetInBytes:'{partitionDetails.OffsetInBytes}'");
+
+                    Console.WriteLine();
+
+                    if (partitionDetails.Volumes.Count > 0)
+                    {
+                        Console.WriteLine("Disk Volumes:");
+
+                        foreach (DiskPart.Volume volume in partitionDetails.Volumes)
+                        {
+                            Console.WriteLine($"Volume Index:'{volume.Index}'; Ltr:'{volume.Ltr}'; Label:'{volume.Label}'; Fs:'{volume.Fs}'; Type:'{volume.Type}'; Size:'{volume.Size}'; Status:'{volume.Status}'; Info:'{volume.Info}'");
+                        }
+
+                        Console.WriteLine();
+                    }
                 }
 
                 Console.WriteLine();
@@ -39,7 +62,7 @@ namespace Tyndall.DiskPartTest
 
                 Console.WriteLine("Disk Volumes:");
 
-                foreach(var volume in diskDetails.Volumes)
+                foreach (DiskPart.Volume volume in diskDetails.Volumes)
                 {
                     Console.WriteLine($"Volume Index:'{volume.Index}'; Ltr:'{volume.Ltr}'; Label:'{volume.Label}'; Fs:'{volume.Fs}'; Type:'{volume.Type}'; Size:'{volume.Size}'; Status:'{volume.Status}'; Info:'{volume.Info}'");
                 }
@@ -53,7 +76,7 @@ namespace Tyndall.DiskPartTest
 
             var volumes = DiskPart.Commands.ListVolume();
 
-            foreach(var volume in volumes)
+            foreach (DiskPart.Volume volume in volumes)
             {
                 Console.WriteLine($"Volume Index:'{volume.Index}'; Ltr:'{volume.Ltr}'; Label:'{volume.Label}'; Fs:'{volume.Fs}'; Type:'{volume.Type}'; Size:'{volume.Size}'; Status:'{volume.Status}'; Info:'{volume.Info}'");
             }

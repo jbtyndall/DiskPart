@@ -10,7 +10,7 @@ namespace Tyndall.DiskPart
         /// <summary>
         /// A dictionary of parsing info for <c>DiskDetail</c> properties.
         /// </summary>
-        private Dictionary<string, string> ParseInfo = new Dictionary<string, string>
+        private readonly Dictionary<string, string> ParseInfo = new Dictionary<string, string>
         {
             ["DiskId"] = "Disk ID",
             ["Type"] = "Type",
@@ -27,11 +27,6 @@ namespace Tyndall.DiskPart
             ["CrashdumpDisk"] = "Crashdump Disk",
             ["ClusteredDisk"] = "Clustered Disk"
         };
-
-        /// <summary>
-        /// The text to identify a Volume.
-        /// </summary>
-        private const string VolumeIdentifier = "Volume";
 
         /// <summary>
         /// The Disk ID of the disk.
@@ -145,40 +140,6 @@ namespace Tyndall.DiskPart
             ClusteredDisk = ParseYesNoAsBoolean(ParseProperty(ParseInfo["ClusteredDisk"], diskPartDetailDiskResults));
 
             Volumes = ParseVolumes(diskPartDetailDiskResults);
-        }
-
-        /// <summary>
-        /// Parses Volumes displayed in the DETAIL DISK results.
-        /// </summary>
-        /// <param name="diskPartDetailDiskResults">The DiskPart results (i.e., output) from a DETAIL DISK command.</param>
-        /// <param name="volumeIdentifier">The text to identify a Volume. The default value is "Volume".</param>
-        /// <returns></returns>
-        private static List<Volume> ParseVolumes(string[] diskPartDetailDiskResults, string volumeIdentifier = VolumeIdentifier)
-        {
-            var volumes = new List<Volume>();
-
-            foreach(var diskPartDetailDiskResultLine in diskPartDetailDiskResults)
-            {
-                var volumeMatch = Regex.Match(diskPartDetailDiskResultLine, $@"{volumeIdentifier} \d+");
-
-                if(volumeMatch.Success)
-                {
-                    volumes.Add(new Volume(diskPartDetailDiskResultLine));
-                }
-            }
-
-            return volumes;
-        }
-
-        /// <summary>
-        /// Utility function for parsing a Yes/No text as a Boolean.
-        /// </summary>
-        /// <param name="yesNo">Input "Yes" or "No" string.</param>
-        /// <param name="trueText">The text to consider as "True".</param>
-        /// <returns>True if the input text matches the "trueText", otherwise False.</returns>
-        private static bool ParseYesNoAsBoolean(string yesNo, string trueText = "yes")
-        {
-            return yesNo.ToLower().Equals(trueText);
         }
     }
 }
