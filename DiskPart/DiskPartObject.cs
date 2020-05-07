@@ -8,6 +8,11 @@ namespace Tyndall.DiskPart
     public abstract class DiskPartObject
     {
         /// <summary>
+        /// The identifier to denote whether or not the object is active.
+        /// </summary>
+        private const string ActiveIdentifier = "*";
+
+        /// <summary>
         /// Parsing information for object Index.
         /// </summary>
         protected abstract (string Identifier, int StartIndex, int Length) IndexParseInfo { get; }
@@ -65,7 +70,7 @@ namespace Tyndall.DiskPart
 
             if(!string.IsNullOrEmpty(removeText))
             {
-                var removePattern = $@"\**\s*{removeText}\s*";
+                var removePattern = $@"\{ActiveIdentifier}*\s*{removeText}\s*";
 
                 adjustedStringResult = Regex.Replace(stringResult, removePattern, "").Trim();
             }

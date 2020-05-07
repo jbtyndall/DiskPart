@@ -11,6 +11,11 @@ namespace Tyndall.DiskPart
         private const string VolumeIdentifier = "Volume";
 
         /// <summary>
+        /// The text to identify a Disk.
+        /// </summary>
+        private const string DiskIdentifier = "Disk";
+
+        /// <summary>
         /// The character that separates a property value from its identifier. The default value is a colon (':').
         /// </summary>
         private const char PropertySeparator = ':';
@@ -146,6 +151,29 @@ namespace Tyndall.DiskPart
             }
 
             return volumes;
+        }
+
+        /// <summary>
+        /// Parses Disks displayed in the DETAIL VOLUME results.
+        /// </summary>
+        /// <param name="diskPartDetailResults">The DiskPart results (i.e., output) from a DETAIL VOLUME command.</param>
+        /// <param name="diskIdentifier">The text to identify a Disk. The default value is "Disk".</param>
+        /// <returns></returns>
+        protected static List<Disk> ParseDisks(string[] diskPartDetailResults, string diskIdentifier = DiskIdentifier)
+        {
+            var disks = new List<Disk>();
+
+            foreach (var diskPartDetailResultLine in diskPartDetailResults)
+            {
+                var diskMatch = Regex.Match(diskPartDetailResultLine, $@"{diskIdentifier} \d+");
+
+                if (diskMatch.Success)
+                {
+                    disks.Add(new Disk(diskPartDetailResultLine));
+                }
+            }
+
+            return disks;
         }
     }
 }

@@ -65,6 +65,26 @@ namespace Tyndall.DiskPartTest
                 foreach (DiskPart.Volume volume in diskDetails.Volumes)
                 {
                     Console.WriteLine($"Volume Index:'{volume.Index}'; Ltr:'{volume.Ltr}'; Label:'{volume.Label}'; Fs:'{volume.Fs}'; Type:'{volume.Type}'; Size:'{volume.Size}'; Status:'{volume.Status}'; Info:'{volume.Info}'");
+
+                    var volumeDetails = DiskPart.Commands.DetailVolume(disk.Index, volume.Index);
+
+                    Console.WriteLine();
+
+                    Console.WriteLine($"DETAIL VOLUME (Disk {disk.Index}, Volume {volume.Index})");
+
+                    Console.WriteLine($"DisplayName: {volumeDetails.DisplayName}; ReadOnly:'{volumeDetails.ReadOnly}'; Hidden:'{volumeDetails.Hidden}'; NoDefaultDriveLetter:'{volumeDetails.NoDefaultDriveLetter}'; ShadowCopy:'{volumeDetails.ShadowCopy}'; Offline:'{volumeDetails.Offline}'; BitlockerEncrypted:'{volumeDetails.BitLockerEncrypted}'; Installable:'{volumeDetails.Installable}'; VolumeCapacity:'{volumeDetails.VolumeCapacity}'; VolumeFreeSpace:'{volumeDetails.VolumeFreeSpace}'");
+
+                    if (volumeDetails.Disks.Count > 0)
+                    {
+                        Console.WriteLine("Disks:");
+
+                        foreach(var volumeDisk in volumeDetails.Disks)
+                        {
+                            Console.WriteLine($"Disk Index:'{volumeDisk.Index}'; Status:'{volumeDisk.Status}'; Size:'{volumeDisk.Size}'; Free:'{volumeDisk.Free}'; Dyn:'{volumeDisk.Dyn}'; Gpt:'{volumeDisk.Gpt}'");
+                        }
+
+                        Console.WriteLine();
+                    }
                 }
 
                 Console.WriteLine();

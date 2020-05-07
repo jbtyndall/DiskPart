@@ -123,6 +123,24 @@ namespace Tyndall.DiskPart
         }
 
         /// <summary>
+        /// Displays the disks on which the current volume resides.
+        /// </summary>
+        /// <param name="diskIndex">The Index of the disk to select.</param>
+        /// <param name="volumeIndex">The Index of the disk to select.</param>
+        /// <param name="diskPartResultsSeparator">The separator character between DiskPart results lines. The default value is a newline.</param>
+        /// <returns>A list of <c>DiskDetail</c>s, as specified by a DiskPart DETAIL DISK command.</returns>
+        public static VolumeDetail DetailVolume(int diskIndex, int volumeIndex, char diskPartResultsSeparator = DiskPartResultsSeparator)
+        {
+            var diskPartCommand = $"RESCAN{Environment.NewLine}SELECT DISK {diskIndex}{Environment.NewLine}SELECT VOLUME {volumeIndex}{Environment.NewLine}DETAIL VOLUME{Environment.NewLine}EXIT";
+
+            var diskPartResults = Run(diskPartCommand, true).Split(diskPartResultsSeparator);
+
+            var details = new VolumeDetail(volumeIndex, diskPartResults);
+
+            return details;
+        }
+
+        /// <summary>
         /// Displays the properties of the specified partition on the specified disk similar to the DETAIL PARTITION command.
         /// </summary>
         /// <param name="diskIndex">The Index of the disk to select.</param>

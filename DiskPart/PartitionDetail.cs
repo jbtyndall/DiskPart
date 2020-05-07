@@ -46,6 +46,10 @@ namespace Tyndall.DiskPart
         /// </summary>
         public List<Volume> Volumes { get; set; }
 
+        /// <summary>
+        /// Instantiates a new <c>PartitionDetail</c> from the specified DiskPart results.
+        /// </summary>
+        /// <param name="diskPartDetailPartitionResults">The DiskPart results (i.e., output) from a DETAIL PARTITION command.</param>
         public PartitionDetail(string[] diskPartDetailPartitionResults)
         {
             DisplayName = ParseDisplayName(diskPartDetailPartitionResults, ParseInfo["Type"]);
